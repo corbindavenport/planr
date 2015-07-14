@@ -18,16 +18,21 @@ $(document).ready(function(){
 
 	if (localStorage.getItem("todaylist") === null) {
 		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
-	} else {
-		var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
-	}
-
-	if (localStorage.getItem("tomorrowlist") === null) {
-		localStorage['tomorrowlist'] = '';
 		var todaylist = JSON.parse("[]");
 	} else {
 		var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 	}
+
+	console.log("Todaylist:" + todaylist);
+
+	if (localStorage.getItem("tomorrowlist") === null) {
+		localStorage['tomorrowlist'] = '';
+		var tomorrowlist = JSON.parse("[]");
+	} else {
+		var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
+	}
+
+	console.log("Tomorrowlist:" + tomorrowlist);
 
 	if (document.addEventListener && window.localStorage) {
 		console.log("Compatible web browser detected.");
@@ -96,7 +101,7 @@ $(document).ready(function(){
 		}
 		var tomorrowtemp = "";
 		for (var i = 0; i < tomorrowlist.length; ++i) {
-			tempitem = todaylist[i].replace(/"/g, '&quot;');
+			tempitem = tomorrowlist[i].replace(/"/g, '&quot;');
 			tomorrowtemp += '"' + tempitem + '",';
 		}
 		todaytemp = todaytemp.substring(0, todaytemp.length - 1); // Cut off last comma

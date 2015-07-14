@@ -191,6 +191,10 @@ table, tr, th {
 	padding-right: 10px;
 }
 
+.modal .modal-content {
+	padding-bottom: 0px !important;
+}
+
 .modal-footer {
 	background: none !important;
 }
