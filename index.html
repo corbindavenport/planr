@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+	<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="js/materialize.min.js"></script>
+	<script type="text/javascript" src="js/weather.js"></script>
+	<script type="text/javascript" src="js/filesaver.min.js"></script>
+	<script type="text/javascript" src="js/blob.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
+	<link type="text/css" rel="stylesheet" href="css/planr.css" media="screen,projection"/>
+	<title>Planr</title>
+	<link rel="apple-touch-icon" sizes="57x57" href="img/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="img/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="img/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="img/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="img/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="img/apple-touch-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon-180x180.png">
+	<link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="img/favicon-194x194.png" sizes="194x194">
+	<link rel="icon" type="image/png" href="img/favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="img/android-chrome-192x192.png" sizes="192x192">
+	<link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="manifest.json">
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<meta name="msapplication-TileColor" content="#00a300">
+	<meta name="msapplication-TileImage" content="img/mstile-144x144.png">
+	<meta name="msapplication-config" content="browserconfig.xml">
+	<meta name="theme-color" content="#2d6930">
+</head>
+<body>
+
+<div id="warning" class="modal">
+	<div class="modal-content">
+		<p>Planr has detected you are using an old web browser. This app works best in Internet Explorer 9+, or the latest versions of Chrome, Firefox, or Opera.</p>
+		<p>We can not guarantee planr will function normally. Please update as soon as possible!</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="waves-effect btn-flat modal-action modal-close">Continue</a>
+	</div>
+</div>
+
+<div id="archive" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<p>Tomorrow automatically moves the to-do list for today to this archive when a day passes.</p>
+		<p class="archive-content">Error loading archive.</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="waves-effect btn-flat modal-action modal-close">Close</a>
+	</div>
+</div>
+
+<div id="reset" class="modal">
+	<div class="modal-content">
+		<b style="color: #f44336;">Are you sure you want to delete all your Planr data? This cannot be undone.</b>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="waves-effect btn-flat modal-action modal-close reset-confirm">Reset</a>
+		<a href="#" class="waves-effect btn-flat modal-action modal-close">Cancel</a>
+	</div>
+</div>
+
+<div id="import" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<p><b>You can import tasks into Planr from a local file. Only Planr data files (.plnr) files can be imported.</b></p>
+		<p style="color: #f44336;">This will replace all your Planr tasks with ones imported from the file.</p>
+		<p>
+			<div class="file-field input-field">
+				<input class="file-path validate" type="text"/>
+				<div class="btn">
+					<span>File</span>
+					<input type="file" id="importchooser" />
+				</div>
+			</div>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="waves-effect btn-flat modal-action modal-close">Cancel</a>
+	</div>
+</div>
+
+<div id="export" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		You can export your tasks as plain text files, HTML files, CSV files, or Planr files (for importing into Planr). The file will start to download when you tap Export.
+		<form action="#">
+			<p>
+				<input name="format" type="radio" id="txt" />
+				<label for="txt">Plain text (.txt)</label>
+			</p>
+			<p>
+				<input name="format" type="radio" id="html" />
+				<label for="html">HTML (.html)</label>
+			</p>
+			<p>
+				<input name="format" type="radio" id="csv" />
+				<label for="csv">Comma-Separated Values (.csv)</label>
+			</p>
+			<p>
+				<input name="format" type="radio" id="plnr" />
+				<label for="plnr">Planr Data File (.plnr)</label>
+			</p>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="waves-effect btn-flat modal-action export-confirm">Export</a>
+		<a href="#" class="waves-effect btn-flat modal-action modal-close">Cancel</a>
+	</div>
+</div>
+
+<div id="new" class="modal">
+	<div class="modal-content">
+		<div class="input-field">
+			<input id="task" type="text" placeholder="Type in a task here...">
+		</div>
+			<input type="checkbox" id="new-toggle"><label for="new-toggle">Push to tomorrow</label>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="modal-action modal-close waves-effect btn-flat add-task">Add</a>
+		<a href="#" class="modal-action modal-close waves-effect btn-flat">Cancel</a>
+	</div>
+</div>
+
+<div id="settings" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<div class="col s12"><b>Weather</b></div>
+		<div class="col s12">Planr uses your location to provide weather information and forecasts.</div>
+		<div class="input-field col s12"><input id="location" type="text" placeholder="City, Country OR U.S. ZIP Code"></div>
+		<div class="col s12"><b>Task cards</b></div>
+		<div class="col s12" style="margin-top: 10px;"><input type="checkbox" class="filled-in" id="showmedia" /><label for="showmedia">Show media in cards</label></div>
+		<div class="col s12"><b>About Planr Beta</b></div>
+		<div class="col s12" style="color: #D32F2F;">You are using the Planr public beta, which is unfinished and may contain bugs. Please report any bugs you find!</div>
+		<div class="col s12">Planr is developed by Corbin Davenport and licensed under the GPLv3 license. It includes code from <a href="http://jquery.com/" target="_blank">jQuery</a>, <a href="http://materializecss.com/" target="_blank">Materialize</a>, <a href="https://github.com/eligrey/FileSaver.js" target="_blank">FileSaver.js</a>, <a href="https://github.com/eligrey/Blob.js" target="_blank">Blob.js</a>, and <a href="http://simpleweatherjs.com/" target="_blank">SimpleWeather</a></div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="modal-action modal-close waves-effect waves-green btn-flat save-settings">Save</a>
+		<a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+	</div>
+</div>
+
+<ul id="data" class="dropdown-content">
+	<li><a href="#" class="import-trigger">Import data</a></li>
+	<li><a href="#" class="export-trigger">Export data</a></li>
+	<li class="divider"></li>
+	<li><a href="#" class="archive-trigger">Archived tasks</a></li>
+	<li><a href="#" class="reset-trigger">Reset data</a></li>
+</ul>
+
+<div class="navbar-fixed">
+	<nav>
+		<div class="nav-wrapper">
+			<a href="#!" class="brand-logo">Planr</a>
+			<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+			<ul class="right hide-on-med-and-down">
+				<li><a href="#" class="new-trigger"><i class="mdi-content-add left"></i> New Task</a></li>
+				<li><a href="#" class="settings-trigger"><i class="mdi-action-settings left"></i> Settings</a></li>
+				<li><a class="dropdown-button" href="#!" data-activates="data"><i class="mdi-device-sd-storage left"></i> Data<i class="mdi-navigation-arrow-drop-down right"></i></a></li>
+			</ul>
+			<ul class="side-nav" id="mobile-demo">
+				<li><a href="#" class="new-trigger"><i class="mdi-content-add left"></i> New Task</a></li>
+				<li><a href="#" class="settings-trigger"><i class="mdi-action-settings left"></i> Settings</a></li>
+				<li class="divider"></li>
+				<li><a href="#" class="import-trigger"><i class="mdi-content-undo left"></i>Import data</a></li>
+				<li><a href="#" class="export-trigger"><i class="mdi-content-forward left"></i>Export data</a></li>
+				<li class="divider"></li>
+				<li><a href="#" class="archive-trigger"><i class="mdi-content-archive left"></i>Archived tasks</a></li>
+				<li><a href="#" class="reset-trigger"><i class="mdi-action-delete left"></i>Reset data</a></li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+<div id="content">
+	<div class="title">Today</div>
+	<div id="today-weather"></div>
+	<div id="todaylist"></div>
+	<div class="title">Tomorrow</div>
+	<div id="tomorrow-weather"></div>
+	<div id="tomorrowlist"></div>
+</div>
+
+<a class="btn-floating btn-large waves-effect waves-light add-btn new-trigger"><i class="mdi-content-add"></i></a>
+
+<div class="preloader-wrapper big active">
+	<div class="spinner-layer spinner-blue">
+	<div class="circle-clipper left">
+	<div class="circle"></div>
+	</div><div class="gap-patch">
+	<div class="circle"></div>
+	</div><div class="circle-clipper right">
+	<div class="circle"></div>
+	</div>
+	</div>
+
+	<div class="spinner-layer spinner-red">
+	<div class="circle-clipper left">
+	<div class="circle"></div>
+	</div><div class="gap-patch">
+	<div class="circle"></div>
+	</div><div class="circle-clipper right">
+	<div class="circle"></div>
+	</div>
+	</div>
+
+	<div class="spinner-layer spinner-yellow">
+	<div class="circle-clipper left">
+	<div class="circle"></div>
+	</div><div class="gap-patch">
+	<div class="circle"></div>
+	</div><div class="circle-clipper right">
+	<div class="circle"></div>
+	</div>
+	</div>
+
+	<div class="spinner-layer spinner-green">
+	<div class="circle-clipper left">
+	<div class="circle"></div>
+	</div><div class="gap-patch">
+	<div class="circle"></div>
+	</div><div class="circle-clipper right">
+	<div class="circle"></div>
+	</div>
+	</div>
+</div>
+
+<script src="js/planr.js"></script>
+
+</body>
+</html>

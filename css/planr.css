@@ -1,0 +1,221 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #EEEEEE;
+	font-size: 14px !important;
+	color: #212121 !important;
+}
+
+@media only screen and (min-width: 993px) {
+	nav .brand-logo {
+		padding-left: 10px !important;
+	}
+	.add-btn {
+		display: none;
+	}
+}
+
+
+@media only screen and (min-width: 600px) {
+	.card-image .card-title {
+		font-size: 40px;
+	}
+}
+
+@media only screen and (min-width: 400px) {
+	.card-image .card-title {
+		font-size: 30px;
+	}
+	.card .delete, .card .link, .card .push {
+		padding-left: 20px !important;
+		padding-right: 20px !important;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	#settings {
+		top: 0px !important;
+		left: 0px !important;
+		right: 0px !important;
+		bottom: 0px !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		height: 100% !important;
+		max-height: 100% !important;
+		margin: 0px !important;
+		border-radius: 0px;
+	}
+}
+
+nav {
+	background: #4CAF50;
+}
+
+.button-collapse {
+	padding-left: 15px;
+}
+
+
+#sidenav-overlay {
+	position: absolute !important;
+}
+
+#toast-container {
+	padding: 10px;
+}
+
+.card-title, .button-colapse {
+	color: #000000 !important;
+}
+
+.topmost {
+	z-index: 999;
+}
+
+.preloader-wrapper {
+	position:absolute;
+	width:300px;
+	height:200px;
+	z-index:15;
+	top:50%;
+	left:50%;
+	margin:-64px 0 0 -35px;
+	z-index: 0;
+}
+
+#content {
+	padding: 10px;
+	max-width: 800px;
+	margin: 0px auto 0px auto;
+}
+
+.input-field {
+	margin-top: 0px !important;
+}
+
+#settings .s12 {
+	margin-bottom: 5px !important;
+}
+
+.title {
+	font-weight: bold;
+	letter-spacing: 2px;
+	color: #7e7e7e !important
+}
+
+.card-image .card-title {
+	color: #FFFFFF !important;
+}
+
+table, tr, th {
+  font-weight: normal !important;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.task {
+	width: 100%;
+	word-wrap: break-word;
+	margin-bottom: 10px;
+}
+
+#tomorrowlist .card, #tomorrow-weather .card {
+	background: #D3D3D3;
+	color: #7e7e7e;
+}
+
+.actions {
+	height: 36px !important;
+}
+
+.card .card-image video {
+	border-radius: 2px 2px 0 0;
+	position: relative;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 100%; }
+
+.card .delete, .card .link, .card .push {
+	margin-right: 0px !important;
+	margin-bottom: 0px !important;
+	padding-left: 10px;
+	padding-right: 10px;
+	float: right;
+}
+
+.card .push {
+	color: #ffab40;
+}
+
+.card .delete {
+	color: #259b24;
+}
+
+.card .link {
+	color: #3f51b5;
+}
+
+.archive-content {
+	border: 1px solid 757575;
+	background: #EEEEEE;
+	padding: 10px;
+	width: 100%;
+	font-family: Courier, monospace;
+}
+
+#settings-trigger {
+	background: #3f51b5;
+	width: 100%;
+}
+
+.add-btn, #save-trigger {
+	position: fixed;
+	background: #4CAF50;
+	right: 16px;
+	bottom: 16px;
+	margin-bottom: 0px !important;
+	-webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+	-moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+#new {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.modal p {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.modal-footer {
+	background: none !important;
+}
+
+p {
+	margin-bottom: 10px !important;
+}
+
+blockquote {
+	margin: 0px !important;
+	padding-left: 0px !important;
+	border-left: none !important;
+}
+
+.twitter-tweet {
+	margin: 0px !important;
+	max-width: 520px !important;
+}
+
+@media only screen and (max-width: 260px) {
+	.tweet-container {
+		display: none;
+	}
+}
+
+.progress {
+	margin: 0 !important;
+}
