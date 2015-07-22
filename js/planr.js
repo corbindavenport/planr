@@ -23,16 +23,12 @@ $(document).ready(function(){
 		var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 	}
 
-	console.log("Todaylist:" + todaylist);
-
 	if (localStorage.getItem("tomorrowlist") === null) {
 		localStorage['tomorrowlist'] = '';
 		var tomorrowlist = JSON.parse("[]");
 	} else {
 		var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
 	}
-
-	console.log("Tomorrowlist:" + tomorrowlist);
 
 	if (document.addEventListener && window.localStorage) {
 		console.log("Compatible web browser detected.");
@@ -55,17 +51,7 @@ $(document).ready(function(){
 		localStorage["lastopened"] = date;
 	}
 	if (localStorage.getItem("lastopened") != date) {
-		var todaytemp = "";
-		for (var i = 0; i < todaylist.length; ++i) {
-			todaytemp += '"' + todaylist[i] + '",';
-		}
-		todaytemp = date + ": " + todaytemp.substring(0, todaytemp.length - 1); // Cut off last comma
-		if (localStorage.getItem("archive") === null) {
-			localStorage["archive"] = todaytemp;
-		} else {
-			localStorage["archive"] = localStorage["archive"] + "\n" + todaytemp;
-		}
-		todaylist = tomorrowlist;
+		todaylist = todaylist.concat(tomorrowlist);
 		tomorrowlist = JSON.parse("[]");
 		localStorage["lastopened"] = date;
 	}
@@ -82,7 +68,7 @@ $(document).ready(function(){
 			$("#tomorrow-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.forecast[1].thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's going to be " + weather.forecast[1].low + "&deg;" + weather.units.temp + "/" + weather.forecast[1].high + "&deg;" + weather.units.temp + " and " + weather.forecast[1].text +  ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
 		},
 		error: function(error) {
-			Materialize.toast('Error fetching the weather.', 3000, 'rounded');
+			Materialize.toast('Error loading weather', 3000, 'rounded');
 		}
 		});
 
@@ -178,10 +164,6 @@ $(document).ready(function(){
 		$('#export').openModal();
 	});
 
-	$(".archive-trigger").click(function() {
-		$('#archive').openModal();
-	});
-
 	$(".reset-trigger").click(function() {
 		$('#reset').openModal();
 	});
@@ -199,13 +181,14 @@ $(document).ready(function(){
 		if (format === "txt") {
 			var txt = ("Planr data exported at " + localStorage['lastopened'] + ":\n\nToday tasks: " + todaylist.toString() + "\n\nTomorrow tasks:" + tomorrowlist.toString());
 			var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your plain text file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.txt");
 				$('#export').closeModal();
 			});
 		} else if (format === "html") {
+			var url = new RegExp(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim);
 			var todaytemp = "";
 			for (var i = 0; i < todaylist.length; ++i) {
 				todaytemp += '"' + todaylist[i] + '",';
@@ -214,12 +197,16 @@ $(document).ready(function(){
 			for (var i = 0; i < tomorrowlist.length; ++i) {
 				tomorrowtemp += '"' + tomorrowlist[i] + '",';
 			}
-			var txt = ('<html><head><meta name="todaylist" content="' + encodeURIComponent(todaytemp.substring(0, todaytemp.length - 1)) + '"><meta name="tomorrowlist" content="' + encodeURIComponent(todaytemp.substring(0, todaytemp.length - 1)) + '"><title>Planr Data</title></head><body><p><b>Planr data exported at ' + localStorage['lastopened'] + '</b></p></p><u>Today tasks:</u></p><ul>');
+			var txt = ('<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"><title>Planr Data</title></head><body><p><b>Planr data exported at ' + localStorage['lastopened'] + '</b></p></p><u>Today tasks:</u></p><ul>');
 			if (todaylist.length === 0) {
 				txt += ('<li>No tasks for today</li>');
 			} else {
 				for (var i = 0; i < todaylist.length; ++i) {
-					txt += ('<li>' + todaylist[i] + '</li>');
+					txt += ('<li>' + todaylist[i]);
+					while((result = url.exec(todaylist[i])) !== null) {
+						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
+					}
+					txt += ('</li>');
 				}
 			}
 			txt += ('</ul><p><u>Tomorrow tasks:</u></p><ul>');
@@ -227,12 +214,16 @@ $(document).ready(function(){
 				txt += ('<li>No tasks for tomorow</li>');
 			} else {
 				for (var i = 0; i < tomorrowlist.length; ++i) {
-					txt += ('<li>' + tomorrowlist[i] + '</li>');
+					txt += ('<li>' + tomorrowlist[i]);
+					while((result = url.exec(tomorrowlist[i])) !== null) {
+						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
+					}
+					txt += ('</li>');
 				}
 			}
 			txt += ('</ul></body></html>');
 			var blob = new Blob([txt], {type: "text/html;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your HTML file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.html");
@@ -256,7 +247,7 @@ $(document).ready(function(){
 				}
 			}
 			var blob = new Blob([txt], {type: "text/csv;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your CSV file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.csv");
@@ -325,14 +316,6 @@ $(document).ready(function(){
 		reader.readAsText(file);
 	};
 
-	// Archive functions
-
-	if (localStorage.getItem("archive") != undefined) {
-		$(".archive-content").html(localStorage["archive"].replace(/(?:\r\n|\r|\n)/g, '<br />'));
-	} else {
-		$(".archive-content").html("There is no archived tasks to display.");
-	}
-
 	// Actions for reset button
 
 	$(".reset-confirm").click(function() {
@@ -364,7 +347,6 @@ $(document).ready(function(){
 		todaylist.splice(item,1);
 		tempitem = $(this).parent().parent().parent().attr('id');
 		temptask = $( ".task" + item ).text();
-		console.log(tempitem);
 		$( "#" + item ).fadeOut( 500, function() {
 			reloadData();
 			Materialize.toast('<span>Task dismissed</span> <a class="btn-flat yellow-text undo-dismiss" href="#">Undo<a>', 3000, 'rounded');
