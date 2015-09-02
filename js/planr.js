@@ -1,3 +1,5 @@
+// Initialize everything
+
 $(document).ready(function(){
 
 	$('#setup').hide();
@@ -8,26 +10,21 @@ $(document).ready(function(){
 		localStorage['location'] = '';
 	}
 
-	if (localStorage.getItem("fontsize") === null) {
-		localStorage['fontsize'] = '14';
-	}
-
 	if (localStorage.getItem("showmedia") === null) {
 		localStorage['showmedia'] = 'true';
 	}
 
 	if (localStorage.getItem("todaylist") === null) {
 		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
-		var todaylist = JSON.parse("[]");
-	} else {
-		var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 	}
+	var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 
 	if (localStorage.getItem("tomorrowlist") === null) {
 		localStorage['tomorrowlist'] = '';
-		var tomorrowlist = JSON.parse("[]");
-	} else {
-		var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
+	}
+
+	if (localStorage.getItem("analytics") === null) {
+		localStorage['analytics'] = 'true';
 	}
 
 	if (document.addEventListener && window.localStorage) {
@@ -36,8 +33,22 @@ $(document).ready(function(){
 		$('#warning').openModal();
 	}
 
-	// Set variable for temporary item storage
+	// Google Analytics
 
+	if (localStorage.getItem("analytics") == "true") {
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-59452245-2', 'auto');
+		  ga('send', 'pageview');
+	}
+
+	// Set variables
+
+	var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
+	var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
 	var tempitem = "";
 	var temptask = "";
 
@@ -149,6 +160,7 @@ $(document).ready(function(){
 
 	$("#location").val(localStorage['location']);
 	$("#showmedia").prop('checked', JSON.parse(localStorage['showmedia']));
+	$("#analytics").prop('checked', JSON.parse(localStorage['analytics']));
 
 	// Actions for menu items
 
@@ -323,6 +335,7 @@ $(document).ready(function(){
 		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
 		localStorage['tomorrowlist'] = '';
 		localStorage['showmedia'] = 'true';
+		localStorage['analytics'] = 'true';
 		window.location.replace('index.html');
 	});
 
@@ -331,12 +344,16 @@ $(document).ready(function(){
 
 	$('.save-settings').click(function() {
 		localStorage['location'] = $("#location").val();
-		localStorage['fontsize'] = $("#fontsize").val();
 		if ($('#showmedia').is(':checked')) {
-				localStorage['showmedia'] = "true";
-			} else {
-				localStorage['showmedia'] = "false";
-			}
+			localStorage['showmedia'] = "true";
+		} else {
+			localStorage['showmedia'] = "false";
+		}
+		if ($('#analytics').is(':checked')) {
+			localStorage['analytics'] = "true";
+		} else {
+			localStorage['analytics'] = "false";
+		}
 		window.location.replace('index.html');
 	});
 
@@ -370,7 +387,6 @@ $(document).ready(function(){
 		todaylist.splice(item,1); // Remove item from today list
 		tomorrowlist.unshift(task); // Add item to tomorrow list
 		$( "#" + item ).fadeOut( 500, function() {
-			$('#confirm').closeModal();
 			reloadData();
 			Materialize.toast('<span>Task pushed</span> <a class="btn-flat yellow-text undo-push" href="#">Undo<a>', 3000, 'rounded');
 		});
@@ -379,9 +395,9 @@ $(document).ready(function(){
 	// Action for undo push
 
 	$(document).on('click', ".undo-push", function() {
-		tomorrowlist.splice(tempitem,1); // Remove item from tomorrow list
+		tomorrowlist.splice(0,1); // Remove item from tomorrow list
 		todaylist.unshift(temptask); // Add item to today list
-		$("#tomorrow" + tempitem).fadeOut( 500, function() {
+		$("#tomorrow0").fadeOut( 500, function() {
 			reloadData();
 		});
 	});
@@ -411,14 +427,12 @@ $(document).ready(function(){
 
 });
 
-$(window).load(function() {
+// Display everything
 
+$(window).load(function() {
 	$(".button-collapse").sideNav({closeOnClick: true});
 	$(".dropdown-button").dropdown();
-
-	// Show everything
 	$('.preloader-wrapper').fadeOut( "slow", function() {});
 	$('.nav-wrapper').fadeIn( "slow", function() {});
 	$('#content').fadeIn( "slow", function() {});
-
 });

@@ -1,8 +1,6 @@
 Planr
 ================
-[Try out the public beta!](http://corbindavenport.github.io/planr)
----------------------------------------------------------
-Planr is a simple and powerful planner app, designed to make managing daily tasks easier. Instead of the classic to-do list, Planr intelligently sorts your tasks into 'Today' and 'Tomorrow'. This keeps your to-do list managable and easy to use.
+Planr is a simple and powerful planner app, designed to make managing daily tasks easier. Instead of the classic to-do list, Planr intelligently sorts your tasks into 'Today' and 'Tomorrow'. This keeps your to-do list managable and easy to use. When a day passes, all your tasks set for tomorrow are moved to today.
 
 **Features:**
 * Follows Google's Material Design, works on any screen size
@@ -11,13 +9,11 @@ Planr is a simple and powerful planner app, designed to make managing daily task
 * Provides the current weather (via Yahoo Weather) for today, and the forecast for tomorrow
 * Export your tasks into plain text, HTML, CSV (viewable in Microsoft Excel and other spreadsheet programs), or Planr file types
 * Import taks from a Planr data file
-* Automatically archives tasks that have expired
-
-Planr is currently in beta, so expect bugs! While in beta, the only way to try it is the link above.
 
 ---------------------------------------------------------
 
-No changelog yet!
+__New in Planr 1.0:__
+* Initial release!
 
 ---------------------------------------------------------
 
