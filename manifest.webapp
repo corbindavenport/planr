@@ -1,0 +1,14 @@
+{
+	"name": "Planr",
+	"version": "1.0",
+	"description": "Planr makes managing your life easy.",
+	"launch_path": "/index.html",
+	"icons": {
+		"128": "/img/firefox-128x128.png"
+	},
+	"developer": {
+		"name": "Corbin Davenport",
+		"url": "http://www.corbindavenport.com/"
+	},
+	"default_locale": "en"
+}

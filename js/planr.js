@@ -1,3 +1,5 @@
+// Initialize everything
+
 $(document).ready(function(){
 
 	$('#setup').hide();
@@ -8,31 +10,22 @@ $(document).ready(function(){
 		localStorage['location'] = '';
 	}
 
-	if (localStorage.getItem("fontsize") === null) {
-		localStorage['fontsize'] = '14';
-	}
-
 	if (localStorage.getItem("showmedia") === null) {
 		localStorage['showmedia'] = 'true';
 	}
 
 	if (localStorage.getItem("todaylist") === null) {
 		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
-		var todaylist = JSON.parse("[]");
-	} else {
-		var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 	}
-
-	console.log("Todaylist:" + todaylist);
+	var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 
 	if (localStorage.getItem("tomorrowlist") === null) {
 		localStorage['tomorrowlist'] = '';
-		var tomorrowlist = JSON.parse("[]");
-	} else {
-		var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
 	}
 
-	console.log("Tomorrowlist:" + tomorrowlist);
+	if (localStorage.getItem("analytics") === null) {
+		localStorage['analytics'] = 'true';
+	}
 
 	if (document.addEventListener && window.localStorage) {
 		console.log("Compatible web browser detected.");
@@ -40,8 +33,22 @@ $(document).ready(function(){
 		$('#warning').openModal();
 	}
 
-	// Set variable for temporary item storage
+	// Google Analytics
 
+	if (localStorage.getItem("analytics") == "true") {
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-59452245-2', 'auto');
+		  ga('send', 'pageview');
+	}
+
+	// Set variables
+
+	var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
+	var tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
 	var tempitem = "";
 	var temptask = "";
 
@@ -55,17 +62,7 @@ $(document).ready(function(){
 		localStorage["lastopened"] = date;
 	}
 	if (localStorage.getItem("lastopened") != date) {
-		var todaytemp = "";
-		for (var i = 0; i < todaylist.length; ++i) {
-			todaytemp += '"' + todaylist[i] + '",';
-		}
-		todaytemp = date + ": " + todaytemp.substring(0, todaytemp.length - 1); // Cut off last comma
-		if (localStorage.getItem("archive") === null) {
-			localStorage["archive"] = todaytemp;
-		} else {
-			localStorage["archive"] = localStorage["archive"] + "\n" + todaytemp;
-		}
-		todaylist = tomorrowlist;
+		todaylist = todaylist.concat(tomorrowlist);
 		tomorrowlist = JSON.parse("[]");
 		localStorage["lastopened"] = date;
 	}
@@ -82,7 +79,7 @@ $(document).ready(function(){
 			$("#tomorrow-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.forecast[1].thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's going to be " + weather.forecast[1].low + "&deg;" + weather.units.temp + "/" + weather.forecast[1].high + "&deg;" + weather.units.temp + " and " + weather.forecast[1].text +  ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
 		},
 		error: function(error) {
-			Materialize.toast('Error fetching the weather.', 3000, 'rounded');
+			Materialize.toast('Error loading weather', 3000, 'rounded');
 		}
 		});
 
@@ -163,6 +160,7 @@ $(document).ready(function(){
 
 	$("#location").val(localStorage['location']);
 	$("#showmedia").prop('checked', JSON.parse(localStorage['showmedia']));
+	$("#analytics").prop('checked', JSON.parse(localStorage['analytics']));
 
 	// Actions for menu items
 
@@ -176,10 +174,6 @@ $(document).ready(function(){
 
 	$(".export-trigger").click(function() {
 		$('#export').openModal();
-	});
-
-	$(".archive-trigger").click(function() {
-		$('#archive').openModal();
 	});
 
 	$(".reset-trigger").click(function() {
@@ -199,13 +193,14 @@ $(document).ready(function(){
 		if (format === "txt") {
 			var txt = ("Planr data exported at " + localStorage['lastopened'] + ":\n\nToday tasks: " + todaylist.toString() + "\n\nTomorrow tasks:" + tomorrowlist.toString());
 			var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your plain text file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.txt");
 				$('#export').closeModal();
 			});
 		} else if (format === "html") {
+			var url = new RegExp(/(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim);
 			var todaytemp = "";
 			for (var i = 0; i < todaylist.length; ++i) {
 				todaytemp += '"' + todaylist[i] + '",';
@@ -214,12 +209,16 @@ $(document).ready(function(){
 			for (var i = 0; i < tomorrowlist.length; ++i) {
 				tomorrowtemp += '"' + tomorrowlist[i] + '",';
 			}
-			var txt = ('<html><head><meta name="todaylist" content="' + encodeURIComponent(todaytemp.substring(0, todaytemp.length - 1)) + '"><meta name="tomorrowlist" content="' + encodeURIComponent(todaytemp.substring(0, todaytemp.length - 1)) + '"><title>Planr Data</title></head><body><p><b>Planr data exported at ' + localStorage['lastopened'] + '</b></p></p><u>Today tasks:</u></p><ul>');
+			var txt = ('<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"><title>Planr Data</title></head><body><p><b>Planr data exported at ' + localStorage['lastopened'] + '</b></p></p><u>Today tasks:</u></p><ul>');
 			if (todaylist.length === 0) {
 				txt += ('<li>No tasks for today</li>');
 			} else {
 				for (var i = 0; i < todaylist.length; ++i) {
-					txt += ('<li>' + todaylist[i] + '</li>');
+					txt += ('<li>' + todaylist[i]);
+					while((result = url.exec(todaylist[i])) !== null) {
+						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
+					}
+					txt += ('</li>');
 				}
 			}
 			txt += ('</ul><p><u>Tomorrow tasks:</u></p><ul>');
@@ -227,12 +226,16 @@ $(document).ready(function(){
 				txt += ('<li>No tasks for tomorow</li>');
 			} else {
 				for (var i = 0; i < tomorrowlist.length; ++i) {
-					txt += ('<li>' + tomorrowlist[i] + '</li>');
+					txt += ('<li>' + tomorrowlist[i]);
+					while((result = url.exec(tomorrowlist[i])) !== null) {
+						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
+					}
+					txt += ('</li>');
 				}
 			}
 			txt += ('</ul></body></html>');
 			var blob = new Blob([txt], {type: "text/html;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your HTML file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.html");
@@ -256,7 +259,7 @@ $(document).ready(function(){
 				}
 			}
 			var blob = new Blob([txt], {type: "text/csv;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your Planr data has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your CSV file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.csv");
@@ -325,14 +328,6 @@ $(document).ready(function(){
 		reader.readAsText(file);
 	};
 
-	// Archive functions
-
-	if (localStorage.getItem("archive") != undefined) {
-		$(".archive-content").html(localStorage["archive"].replace(/(?:\r\n|\r|\n)/g, '<br />'));
-	} else {
-		$(".archive-content").html("There is no archived tasks to display.");
-	}
-
 	// Actions for reset button
 
 	$(".reset-confirm").click(function() {
@@ -340,6 +335,7 @@ $(document).ready(function(){
 		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
 		localStorage['tomorrowlist'] = '';
 		localStorage['showmedia'] = 'true';
+		localStorage['analytics'] = 'true';
 		window.location.replace('index.html');
 	});
 
@@ -348,12 +344,16 @@ $(document).ready(function(){
 
 	$('.save-settings').click(function() {
 		localStorage['location'] = $("#location").val();
-		localStorage['fontsize'] = $("#fontsize").val();
 		if ($('#showmedia').is(':checked')) {
-				localStorage['showmedia'] = "true";
-			} else {
-				localStorage['showmedia'] = "false";
-			}
+			localStorage['showmedia'] = "true";
+		} else {
+			localStorage['showmedia'] = "false";
+		}
+		if ($('#analytics').is(':checked')) {
+			localStorage['analytics'] = "true";
+		} else {
+			localStorage['analytics'] = "false";
+		}
 		window.location.replace('index.html');
 	});
 
@@ -364,7 +364,6 @@ $(document).ready(function(){
 		todaylist.splice(item,1);
 		tempitem = $(this).parent().parent().parent().attr('id');
 		temptask = $( ".task" + item ).text();
-		console.log(tempitem);
 		$( "#" + item ).fadeOut( 500, function() {
 			reloadData();
 			Materialize.toast('<span>Task dismissed</span> <a class="btn-flat yellow-text undo-dismiss" href="#">Undo<a>', 3000, 'rounded');
@@ -388,7 +387,6 @@ $(document).ready(function(){
 		todaylist.splice(item,1); // Remove item from today list
 		tomorrowlist.unshift(task); // Add item to tomorrow list
 		$( "#" + item ).fadeOut( 500, function() {
-			$('#confirm').closeModal();
 			reloadData();
 			Materialize.toast('<span>Task pushed</span> <a class="btn-flat yellow-text undo-push" href="#">Undo<a>', 3000, 'rounded');
 		});
@@ -397,9 +395,9 @@ $(document).ready(function(){
 	// Action for undo push
 
 	$(document).on('click', ".undo-push", function() {
-		tomorrowlist.splice(tempitem,1); // Remove item from tomorrow list
+		tomorrowlist.splice(0,1); // Remove item from tomorrow list
 		todaylist.unshift(temptask); // Add item to today list
-		$("#tomorrow" + tempitem).fadeOut( 500, function() {
+		$("#tomorrow0").fadeOut( 500, function() {
 			reloadData();
 		});
 	});
@@ -429,14 +427,12 @@ $(document).ready(function(){
 
 });
 
-$(window).load(function() {
+// Display everything
 
+$(window).load(function() {
 	$(".button-collapse").sideNav({closeOnClick: true});
 	$(".dropdown-button").dropdown();
-
-	// Show everything
 	$('.preloader-wrapper').fadeOut( "slow", function() {});
 	$('.nav-wrapper').fadeIn( "slow", function() {});
 	$('#content').fadeIn( "slow", function() {});
-
 });
