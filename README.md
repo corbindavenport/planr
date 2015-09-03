@@ -1,5 +1,7 @@
 Planr
 ================
+[![Get it on Chrome Web Store](http://i.imgur.com/gdDBbVh.png)](https://chrome.google.com/webstore/detail/elehipfkjgefjoikmopahajfpimhapch) [![Get it on Google Play](http://i.imgur.com/GxU6XWQ.png)](https://play.google.com/store/apps/details?id=com.corbin.planr) [![Get it on Firefox Marketplace](http://i.imgur.com/JooqNu9.png)](https://marketplace.firefox.com/app/planr/)
+---------------------------------------------------------
 Planr is a simple and powerful planner app, designed to make managing daily tasks easier. Instead of the classic to-do list, Planr intelligently sorts your tasks into 'Today' and 'Tomorrow'. This keeps your to-do list managable and easy to use. When a day passes, all your tasks set for tomorrow are moved to today.
 
 **Features:**
@@ -8,7 +10,7 @@ Planr is a simple and powerful planner app, designed to make managing daily task
 * Stores your tasks locally on your device, without any accounts or managing passwords
 * Provides the current weather (via Yahoo Weather) for today, and the forecast for tomorrow
 * Export your tasks into plain text, HTML, CSV (viewable in Microsoft Excel and other spreadsheet programs), or Planr file types
-* Import taks from a Planr data file
+* Import tasks from a Planr data file
 
 ---------------------------------------------------------
 
