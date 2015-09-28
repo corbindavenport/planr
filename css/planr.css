@@ -26,7 +26,7 @@ body {
 	.card-image .card-title {
 		font-size: 30px;
 	}
-	.card .delete, .card .link, .card .push {
+	.card .todaydismiss, .card .tomorrowdismiss, .card .pull, .card .link, .card .push {
 		padding-left: 20px !important;
 		padding-right: 20px !important;
 	}
@@ -87,7 +87,7 @@ nav {
 	height: 200% !important;
 }
 
-#content {
+#content, #settings {
 	padding: 10px;
 	max-width: 800px;
 	margin: 0px auto 0px auto;
@@ -101,10 +101,10 @@ nav {
 	margin-bottom: 5px !important;
 }
 
-.title {
-	font-weight: bold;
-	letter-spacing: 2px;
-	color: #7e7e7e !important
+.maintitle {
+	line-height: 48px;
+	font-size: 24px;
+	font-weight: 300;
 }
 
 .card-image .card-title {
@@ -123,11 +123,6 @@ table, tr, th {
 	margin-bottom: 10px;
 }
 
-#tomorrowlist .card, #tomorrow-weather .card {
-	background: #D3D3D3;
-	color: #7e7e7e;
-}
-
 .actions {
 	height: 36px !important;
 }
@@ -141,7 +136,7 @@ table, tr, th {
 	bottom: 0;
 	width: 100%; }
 
-.card .delete, .card .link, .card .push {
+.card .todaydismiss, .card .tomorrowdismiss, .card .pull, .card .link, .card .push {
 	margin-right: 0px !important;
 	margin-bottom: 0px !important;
 	padding-left: 10px;
@@ -149,11 +144,11 @@ table, tr, th {
 	float: right;
 }
 
-.card .push {
+.card .push, .card .pull {
 	color: #ffab40;
 }
 
-.card .delete {
+.card .todaydismiss, .card .tomorrowdismiss {
 	color: #259b24;
 }
 
@@ -224,6 +219,85 @@ blockquote {
 	}
 }
 
+.youtube-embed, .vimeo-embed {
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 0px;
+	height: 0;
+	overflow: hidden;
+	border: 0px solid #FFF !important;
+	border-radius: 2px 2px 0px 0px !important;
+	-webkit-border-radius: 2px 2px 0px 0px !important;
+	-o-border-radius: 2px 2px 0px 0px !important;
+}
+
+.vine-embed {
+	position: relative;
+	padding-bottom: 100%;
+	padding-top: 0px;
+	height: 0;
+	overflow: hidden;
+	border: 0px solid #FFF !important;
+	border-radius: 2px 2px 0px 0px !important;
+	-webkit-border-radius: 2px 2px 0px 0px !important;
+	-o-border-radius: 2px 2px 0px 0px !important;
+	max-height: 350px !important;
+}
+
+.youtube-embed iframe, .vimeo-embed iframe, .vine-embed iframe {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+}
 .progress {
 	margin: 0 !important;
+}
+
+/* Styles for Settings */
+
+#settings {
+	padding: 0px 10px 10px 10px !important;
+	background: #EEEEEE;
+	display: none;
+}
+
+.settings {
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	background-clip: padding-box;
+	background: #EEEEEE;
+}
+
+.settings .settings-item {
+	line-height: 1.5rem;
+	padding: 10px 20px;
+	margin: 0px;
+	border-bottom: 1px solid #e0e0e0;
+	cursor: pointer;
+}
+
+.settings .settings-item:first-child {
+	padding-top: 0px !important;
+}
+
+.settings .settings-item:last-child {
+	border-bottom: none;
+}
+
+.settings .title {
+	color: #4CAF50 !important;
+	letter-spacing: 0px !important;
+}
+
+.settings a.settings-item {
+	display: block;
+	-webkit-transition: 0.25s;
+	-moz-transition: 0.25s;
+	-o-transition: 0.25s;
+	-ms-transition: 0.25s;
+	transition: 0.25s;
+	color: #26a69a;
 }

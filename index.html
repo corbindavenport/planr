@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="js/weather.js"></script>
 	<script type="text/javascript" src="js/filesaver.min.js"></script>
 	<script type="text/javascript" src="js/blob.min.js"></script>
+	<script type="text/javascript" src="js/jquery.linkify-1.0-min.js"></script>
 	<link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection"/>
 	<link type="text/css" rel="stylesheet" href="css/planr.css" media="screen,projection"/>
 	<title>Planr</title>
@@ -41,6 +42,21 @@
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="waves-effect btn-flat modal-action modal-close">Continue</a>
+	</div>
+</div>
+
+<div id="update" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<h4>What's new</h4>
+		<p>Planr 2.0 has several new features for you to enjoy!</p>
+		<p><u>New settings</u>: The settings menu has been redesigned, and includes new options (such as switching weather temperature units).</p>
+		<p><u>Better embed support</u>: You can now paste links to MP3 files, Vine videos, YouTube videos, or Vimeo videos and they will appear in the task's card!</p>
+		<p><u>Better links</u>: URLs pasted into tasks become links automatically!</p>
+		<p><u>Actions for tomorrow</u>: You can now dismiss and pull (reverse of push to tomorrow) tasks set for tomorrow.</p>
+		<p><i>And lots of bug fixes and small improvements!</i></p>
+	</div>
+	<div class="modal-footer">
+		<a class="waves-effect btn-flat modal-close">Close</a>
 	</div>
 </div>
 
@@ -114,21 +130,66 @@
 	</div>
 </div>
 
-<div id="settings" class="modal modal-fixed-footer">
+<div id="locationmodal" class="modal">
 	<div class="modal-content">
-		<div class="col s12"><b>Weather</b></div>
-		<div class="col s12">Planr uses your location to provide weather information and forecasts.</div>
-		<div class="input-field col s12"><input id="location" type="text" placeholder="City, Country OR U.S. ZIP Code"></div>
-		<div class="col s12"><b>Task cards</b></div>
-		<div class="col s12" style="margin-top: 10px;"><input type="checkbox" class="filled-in" id="showmedia" /><label for="showmedia">Show media in cards</label></div>
-		<div class="col s12"><b>Privacy</b></div>
-		<div class="col s12" style="margin-top: 10px;"><input type="checkbox" class="filled-in" id="analytics" /><label for="analytics">Analytics</label></div>
-		<div class="col s12"><b>About Planr 1.0</b></div>
-		<div class="col s12">Planr is developed by Corbin Davenport and licensed under the GPLv3 license. It uses components of <a href="http://jquery.com/" target="_blank">jQuery</a>, <a href="http://materializecss.com/" target="_blank">Materialize</a>, <a href="https://github.com/eligrey/FileSaver.js" target="_blank">FileSaver.js</a>, <a href="https://github.com/eligrey/Blob.js" target="_blank">Blob.js</a>, and <a href="http://simpleweatherjs.com/" target="_blank">SimpleWeather</a>.</div>
+		<b>You can enter any city, ZIP Code, or coordinates. This is used for weather forecasts.</b>
+		<div class="input-field"><input id="location" placeholder="City, Country OR U.S. ZIP Code" type="text"></div>
+	</div>
+	<div class="modal-footer share-footer">
+		<a class="waves-effect btn-flat modal-close">Save</a>
+	</div>
+</div>
+
+<div id="unitsmodal" class="modal">
+	<div class="modal-content">
+		<b>Imperial (American) and Metric units are supported.</b>
+		<select id="unit"><option value="f">Imperial</option><option value="c">Metric</option></select>
+	</div>
+	<div class="modal-footer share-footer">
+		<a class="waves-effect btn-flat modal-close">Select</a>
+	</div>
+</div>
+
+<div id="backgroundmodal" class="modal">
+	<div class="modal-content">
+		<b>You can optionally set a background image that appears behind all content.</b>
+		<div class="input-field"><input type="text" id="bg" name="bg" placeholder="URL to image" /></div>
+	</div>
+	<div class="modal-footer share-footer">
+		<a class="waves-effect btn-flat modal-close">Select</a>
+	</div>
+</div>
+
+<div id="privacymodal" class="modal modal-fixed-footer">
+	<div class="modal-content">
+		<b>Planr Privacy Policy</b>
+		<p>Weather data is retrieved from Yahoo Weather, which is subject to the <a href="https://info.yahoo.com/privacy/us/yahoo/weather/details.html" target="_blank">Yahoo Weather Privacy Policy</a>. The only data sent online is your location, which is used to retrieve weather data. Your location is not stored or recorded in any shape or form by the developer(s) of Planr. All weather services can be completely disabled by the user in the Planr app settings.</p>
+		<p>Planr uses Google Analytics by default, which is a web analysis service provided by Google. This is used by the developer(s) of Planr to determine how users interact with Planr, and help develop the app to better suit it's users. Google utilizes the data collected to track and examine the use of Planr, to prepare reports on its activities and share them with other Google services. Google may use the data collected to contextualize and personalize the ads of its own advertising network. The use of Google Analytics is subject to Google's Privacy Policy, which can be found <a href="http://www.google.com/intl/en/policies/privacy/" target="_blank">here</a>. However, all Google Analytics services can be completely disabled by the user in the Planr app settings. Furthermore, none of your app settings (location, tasks data, etc) are sent through Analytics.</p>
+		<p>Planr includes support for dynamically detecting specific types of links and embedding them inside Planr. This includes images, HTML5 video, and HTML5 audio. Planr also supports displaying content from YouTube, Vimeo, Vine, and Twitter, which are handled by the respective services' embed codes. These embedded players are not recorded or modified by Planr in any way. Embedded content from YouTube, Vimeo, Vine, and Twitter may contain tracking code such as analytics, independently reviewed by the those services. The developer(s) of Planr are in no way responsible for any negative action that may occur from the use of automatically embedded content. This can be completely disabled by switching 'Show media in cards' in the Planr app settings to off.</p>
 	</div>
 	<div class="modal-footer">
-		<a href="#" class="modal-action modal-close waves-effect waves-green btn-flat save-settings">Save</a>
-		<a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+		<a class="waves-effect btn-flat modal-close">Close</a>
+	</div>
+</div>
+
+<div id="paypalmodal" class="modal">
+	<div class="modal-content">
+		<p>Thank you for considering donating! This will open PayPal's website in a new window.</p>
+	</div>
+	<div class="modal-footer">
+	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=4SZVSMJKDS35J&lc=US&item_name=Planr%20Donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank" class="waves-effect btn-flat">Continue</a>
+	<a class="waves-effect btn-flat modal-close">Cancel</a>
+	</div>
+</div>
+
+<div id="bitcoinmodal" class="modal">
+	<div class="modal-content">
+		<p>Please send bitcoin to this address:</p>
+		<p style="text-align:center;"><img src="img/qr.png" /></p>
+		<p style="font-family:Monaco,Menlo,Consolas,'Courier New',monospace; text-align:center; overflow-wrap:break-word !important;">1GSbhaUp8JSRepqQceHzrGhV1bPk9hcPuS</p>
+	</div>
+	<div class="modal-footer">
+		<a class="waves-effect btn-flat modal-close">Close</a>
 	</div>
 </div>
 
@@ -163,15 +224,37 @@
 </div>
 
 <div id="content">
-	<div class="title">Today</div>
+	<div class="maintitle">Today</div>
 	<div id="today-weather"></div>
 	<div id="todaylist"></div>
-	<div class="title">Tomorrow</div>
+	<div class="maintitle">Tomorrow</div>
 	<div id="tomorrow-weather"></div>
 	<div id="tomorrowlist"></div>
 </div>
 
 <a class="btn-floating btn-large waves-effect waves-light add-btn new-trigger"><i class="mdi-content-add"></i></a>
+
+<div id="settings">
+	<ul class="settings">
+		<li class="settings-item title"><b>General</b></li>
+		<li class="settings-item"><div>Enable weather forecasts<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="showweather"><span class="lever"></span>On</label></div></a></div></li>
+		<li class="settings-item location-item">Location</li>
+		<li class="settings-item units-item">Units</li>
+		<li class="settings-item"><div>Show media in cards<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="showmedia"><span class="lever"></span>On</label></div></a></div></li>
+		<li class="settings-item title"><b>Privacy</b></li>
+		<li class="settings-item"><div>Analytics<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="analytics"><span class="lever"></span>On</label></div></a></div></li>
+		<li class="settings-item privacy-item">Privacy Policy</li>
+		<li class="settings-item title"><b>About Planr 2.0</b></li>
+		<li class="settings-item">Planr is developed by Corbin Davenport and licensed under the GPLv3 license. It uses components of <a href="http://jquery.com/" target="_blank">jQuery</a>, <a href="http://materializecss.com/" target="_blank">Materialize</a>, <a href="https://github.com/eligrey/FileSaver.js" target="_blank">FileSaver.js</a>, <a href="https://github.com/eligrey/Blob.js" target="_blank">Blob.js</a>, <a href="http://simpleweatherjs.com/" target="_blank">SimpleWeather</a>, and <a href="https://github.com/maranomynet/linkify" target="_blank">Linkify</a>.</li>
+		<li class="settings-item twitterlink">Planr on Twitter<a class="secondary-content"><i class="mdi-content-send"></i></a></li>
+		<li class="settings-item googlelink">Planr on Google+<a class="secondary-content"><i class="mdi-content-send"></i></a></li>
+		<li class="settings-item githublink">Planr on GitHub<a class="secondary-content"><i class="mdi-content-send"></i></a></li>
+		<li class="settings-item title"><b>Donate</b></li>
+		<li class="settings-item">If you find Planr useful, please donate to support continued development. It would mean a lot!</li>
+		<li class="settings-item paypal">Donate via PayPal</li>
+		<li class="settings-item bitcoin">Donate via Bitcoin</li>
+	</ul>
+</div>
 
 <div class="preloader-wrapper big active">
 	<div class="spinner-layer spinner-blue">

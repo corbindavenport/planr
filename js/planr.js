@@ -4,27 +4,49 @@ $(document).ready(function(){
 
 	$('#setup').hide();
 	$('#content').hide();
+	$('#transfer-help').hide();
 	$('.nav-wrapper').hide();
+	$('select').material_select();
+
+	if (localStorage.getItem("todaylist") === null) {
+		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","You can paste links to media in a task, such as images or videos, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg","It even works for YouTube videos! https://youtu.be/QQh56geU0X8"';
+	}
+
+	if (localStorage.getItem("tomorrowlist") === null) {
+		localStorage['tomorrowlist'] = '';
+	}
+
+	if (localStorage.getItem("planr") != "2.0") {
+		localStorage['planr'] = '2.0';
+		$('#update').openModal();
+	}
+
+	if (localStorage.getItem("showweather") === null) {
+		localStorage['showweather'] = 'true';
+	}
 
 	if (localStorage.getItem("location") === null) {
 		localStorage['location'] = '';
+	}
+
+	if (localStorage.getItem("unit") === null) {
+		localStorage['unit'] = 'f';
 	}
 
 	if (localStorage.getItem("showmedia") === null) {
 		localStorage['showmedia'] = 'true';
 	}
 
-	if (localStorage.getItem("todaylist") === null) {
-		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
-	}
-	var todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
-
-	if (localStorage.getItem("tomorrowlist") === null) {
-		localStorage['tomorrowlist'] = '';
+	if (localStorage.getItem("bg") === null) {
+		localStorage['bg'] = '';
 	}
 
 	if (localStorage.getItem("analytics") === null) {
 		localStorage['analytics'] = 'true';
+	}
+
+	if (localStorage.getItem("help") === null) {
+		localStorage['help'] = 'true';
 	}
 
 	if (document.addEventListener && window.localStorage) {
@@ -69,22 +91,24 @@ $(document).ready(function(){
 
 	// Weather forecast
 
-	if (localStorage.getItem("location") != "") {
-		$.simpleWeather({
-		location: localStorage['location'],
-		woeid: '',
-		unit: 'f',
-		success: function(weather) {
-			$("#today-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's currently " + weather.temp + "&deg;" + weather.units.temp + " and " + weather.currently +  " in " + weather.city + ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
-			$("#tomorrow-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.forecast[1].thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's going to be " + weather.forecast[1].low + "&deg;" + weather.units.temp + "/" + weather.forecast[1].high + "&deg;" + weather.units.temp + " and " + weather.forecast[1].text +  ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
-		},
-		error: function(error) {
-			Materialize.toast('Error loading weather', 3000, 'rounded');
-		}
-		});
+	if (localStorage.getItem("showweather") === "true") {
+		if (localStorage.getItem("location") != "") {
+			$.simpleWeather({
+			location: localStorage['location'],
+			woeid: '',
+			unit: localStorage['unit'],
+			success: function(weather) {
+				$("#today-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's currently " + weather.temp + "&deg;" + weather.units.temp + " and " + weather.currently +  " in " + weather.city + ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
+				$("#tomorrow-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.forecast[1].thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's going to be " + weather.forecast[1].low + "&deg;" + weather.units.temp + "/" + weather.forecast[1].high + "&deg;" + weather.units.temp + " and " + weather.forecast[1].text +  ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
+			},
+			error: function(error) {
+				Materialize.toast('Error loading weather', 3000, 'rounded');
+			}
+			});
 
-	} else {
-		$("#today-weather").append("<div class='card'><div class='card-content'><i>Your weather location has not been configured yet. Go to the settings to set a location!</i></div></div>");
+		} else {
+			$("#today-weather").append("<div class='card'><div class='card-content'><i>Your weather location has not been configured yet. Go to the settings to set a location!</i></div></div>");
+		}
 	}
 
 	// Reload everything after changes
@@ -113,23 +137,41 @@ $(document).ready(function(){
 				$("#todaylist").append('<div class="card"><div class="card-content"><p><i>Theres nothing here! Add an item by pressing the Add button in the lower-right corner of the screen.</i></p></div></div>');
 			} else {
 				for (var i = 0; i < todaylist.length; ++i) {
-					$("#todaylist").append('<div id="' + i + '" class="card"><div class="card-content"><div class="task task' + i + '">' + todaylist[i] + '</div><div class="actions actions' + i + '"><a class="waves-effect waves-green btn-flat delete">Dismiss</a><a class="waves-effect waves-green btn-flat push">Push</a></div></div></div>');
+					$("#todaylist").append('<div id="today' + i + '" class="card"><div class="card-content"><div class="task todaytask' + i + '">' + todaylist[i] + '</div><div class="actions actions' + i + '"><a class="waves-effect waves-green btn-flat todaydismiss">Dismiss</a><a class="waves-effect waves-green btn-flat push">Push</a></div></div></div>');
 					// Detect links in task
 					var result;
 					while((result = url.exec(todaylist[i])) !== null) {
-						$(".actions" + i).append('<a href="' + result[1] + '" target="_blank" class="waves-effect waves-green btn-flat link">Open Link</a>');
 						if (localStorage.getItem("showmedia") === "true") {
-							if (result[1].match(/jpg$/) || result[1].match(/jpeg$/) || result[1].match(/png$/) || result[1].match(/gif$/)) {
-								$("#" + i).prepend('<div class="card-image"><img src="' + result[1] + '"></div>');
+							if (result[1].match(/https?:\/\/([^\s]+\.[^\s\.]+\.(png|jpg|jpeg|gif))/i)) {
+								// Detect image in URL and show it inside card
+								$("#today" + i).prepend('<div class="card-image"><img src="' + result[1] + '"></div>');
 							} else if (result[1].match(/mp4$/)) {
-								$("#" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/mp4"></video></div>');
+								// Detect MP4 video in URL and embed HTML5 player
+								$("#today" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/mp4"></video></div>');
 							} else if (result[1].match(/ogg$/)) {
-								$("#" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/ogg"></video></div>');
+								// Detect OGG video in URL and embed HTML5 player
+								$("#today" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/ogg"></video></div>');
 							} else if (result[1].match(/webm$/)) {
-								$("#" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/webm"></video></div>');
+								// Detect WebM video in URL and embed HTML5 player
+								$("#today" + i).prepend('<div class="card-image"><video controls><source src="' + result[1] + '" type="video/webm"></video></div>');
+							} else if (result[1].match(/mp3$/)) {
+								// Detect MP3 audio in URL and embed HTML5 player
+								$("#today" + i).prepend('<div class="card-image"><audio controls><source src="' + result[1] + '" type="audio/mpeg"></audio></div>');
+							} else if (result[1].match(/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/)) {
+								// Detect YouTube video link and embed player
+								var videoid = (result[1].match(/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/)) ? RegExp.$1 : false;
+								$("#today" + i).prepend('<div class="card-image youtube-embed"><iframe src="https://www.youtube.com/embed/' + videoid + '?modestbranding=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>');
+							} else if (result[1].match(/^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/)) {
+								// Detect Vimeo video link and embed player
+								var videoid = (result[1].match(/vimeo.*\/(\d+)/)) ? RegExp.$1 : false;
+								$("#today" + i).prepend('<div class="card-image vimeo-embed"><iframe src="https://player.vimeo.com/video/' + videoid + '?badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>');
+							} else if (result[1].match(/vine\.co\/v\/([a-z0-9]+)/i)) {
+								// Detect Vine video link and embed player
+								var videoid = (result[1].match(/(.*v\s+)(.*)(\s+milk.*)/)) ? RegExp.$1 : false;
+								$("#today" + i).prepend('<div class="card-image vine-embed"><iframe src="' + result[1] + '/embed/simple" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>');
 							} else if (result[1].indexOf("https://twitter.com/") > -1) {
 								$.getScript("http://platform.twitter.com/widgets.js");
-								$("#" + i).prepend('<div class="card-image tweet-container tweet' + i + '" align="center"><blockquote class="twitter-tweet"><a href="' + result[1] + '"><div class="progress"><div class="indeterminate"></div></div></a></blockquote></div>');
+								$("#today" + i).prepend('<div class="card-image tweet-container tweet' + i + '" align="center"><blockquote class="twitter-tweet"><a href="' + result[1] + '"><div class="progress"><div class="indeterminate"></div></div></a></blockquote></div>');
 							}
 						}
 					}
@@ -144,7 +186,7 @@ $(document).ready(function(){
 				$("#tomorrowlist").append('<div class="card"><div class="card-content"><i>This is where your items pushed to tomorrow appear.</i></div></div>');
 			} else {
 				for (var i = 0; i < tomorrowlist.length; ++i) {
-					$( "#tomorrowlist" ).append('<div id="tomorrow' + i + '" class="card"><div class="card-content">' + tomorrowlist[i] + '</div></div>');
+					$( "#tomorrowlist" ).append('<div id="tomorrow' + i + '" class="card"><div class="card-content"><div class="task tomorrowtask' + i + '">' + tomorrowlist[i] + '</div><div class="actions actions' + i + '"><a class="waves-effect waves-green btn-flat tomorrowdismiss">Dismiss</a><a class="waves-effect waves-green btn-flat pull">Pull</a></div></div></div>');
 				}
 			}
 		}
@@ -152,20 +194,57 @@ $(document).ready(function(){
 		// Reload variables from updated localStorage sources
 		todaylist = JSON.parse("[" + localStorage["todaylist"] + "]");
 		tomorrowlist = JSON.parse("[" + localStorage["tomorrowlist"] + "]");
+
+		// Make links clickable
+		$('#content').linkify({});
+		$("#content a").attr("target","_blank");
 	}
 
 	reloadData();
 
 	// Read values of settings from localStorage
 
+	$("#showweather").prop('checked', JSON.parse(localStorage['showweather']));
 	$("#location").val(localStorage['location']);
+	$("#unit").val(localStorage['unit']);
 	$("#showmedia").prop('checked', JSON.parse(localStorage['showmedia']));
 	$("#analytics").prop('checked', JSON.parse(localStorage['analytics']));
 
 	// Actions for menu items
 
 	$(".settings-trigger").click(function() {
-		$('#settings').openModal();
+		if (localStorage.getItem("help") === "true") {
+			$('#settings').prepend('<div class="card helpcard"><div class="card-content">Look in the side menu (or the top menu on larger screens) to save these settings. Tap this card to hide this message.</div></div>');
+			$(document).on("click",".helpcard", function () {
+				$('.helpcard').fadeOut( 300, function() {});
+				localStorage['help'] = 'false';
+			});
+		}
+		$('.add-btn').fadeOut( 300, function() {});
+		$('#content').fadeOut( 300, function() {
+			$('.settings-trigger').html('<i class="mdi-content-save left"></i> Save settings');
+			$('#settings').fadeIn( 300, function() {});
+		});
+		$(".settings-trigger").click(function() {
+			if ($('#showweather').is(':checked')) {
+				localStorage['showweather'] = "true";
+			} else {
+				localStorage['showweather'] = "false";
+			}
+			localStorage['location'] = $("#location").val();
+			localStorage['unit'] = $("#unit").val();
+			if ($('#showmedia').is(':checked')) {
+				localStorage['showmedia'] = "true";
+			} else {
+				localStorage['showmedia'] = "false";
+			}
+			if ($('#analytics').is(':checked')) {
+				localStorage['analytics'] = "true";
+			} else {
+				localStorage['analytics'] = "false";
+			}
+			window.location.replace('index.html');
+			});
 	});
 
 	$(".import-trigger").click(function() {
@@ -176,6 +255,14 @@ $(document).ready(function(){
 		$('#export').openModal();
 	});
 
+	$(".transfer-trigger").click(function() {
+		$('#transfer').openModal();
+	});
+
+	$(document).on('click', ".transfer-help-trigger", function() {
+		$("#transfer-help").fadeIn( 500, function() {});
+	});
+
 	$(".reset-trigger").click(function() {
 		$('#reset').openModal();
 	});
@@ -183,6 +270,42 @@ $(document).ready(function(){
 	$(".new-trigger").click(function() {
 		$('#new').openModal();
 		$('#task').focus();
+	});
+
+	// Settings items
+
+	$('.location-item').click(function() {
+		$('#locationmodal').openModal();
+		$("#location").select();
+	});
+
+	$('.units-item').click(function() {
+		$('#unitsmodal').openModal();
+		$("#unit").select();
+	});
+
+	$('.privacy-item').click(function() {
+		$('#privacymodal').openModal();
+	});
+
+	$('.twitterlink').click(function() {
+		window.open("https://twitter.com/PlanrApp", "_blank");
+	});
+
+	$('.googlelink').click(function() {
+		window.open("https://plus.google.com/114345563365880139237", "_blank");
+	});
+
+	$('.githublink').click(function() {
+		window.open("https://github.com/corbindavenport/planr", "_blank");
+	});
+
+	$('.paypal').click(function() {
+		$('#paypalmodal').openModal();
+	});
+
+	$('.bitcoin').click(function() {
+		$('#bitcoinmodal').openModal();
 	});
 
 	// Data functions
@@ -332,73 +455,75 @@ $(document).ready(function(){
 
 	$(".reset-confirm").click(function() {
 		localStorage['location'] = '';
-		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","When you add a link, it adds a button to the card! http://www.google.com/","You can also add links to media in a task, such as images or HTML5 video, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg"';
+		localStorage["todaylist"] = '"This is a sample list item. You can delete these easily by tapping the Dismiss button. You can also push them to tomorrow by tapping the Push button.","You can paste links to media in a task, such as images or videos, and they will appear in the card. http://i.imgur.com/v2X91VD.jpg","It even works for YouTube videos! https://youtu.be/QQh56geU0X8"';
 		localStorage['tomorrowlist'] = '';
 		localStorage['showmedia'] = 'true';
 		localStorage['analytics'] = 'true';
+		localStorage['help'] = 'true';
 		window.location.replace('index.html');
 	});
 
+	// Action for dismiss buttons
 
-	// Actions for save button
-
-	$('.save-settings').click(function() {
-		localStorage['location'] = $("#location").val();
-		if ($('#showmedia').is(':checked')) {
-			localStorage['showmedia'] = "true";
-		} else {
-			localStorage['showmedia'] = "false";
-		}
-		if ($('#analytics').is(':checked')) {
-			localStorage['analytics'] = "true";
-		} else {
-			localStorage['analytics'] = "false";
-		}
-		window.location.replace('index.html');
-	});
-
-	// Action for dismiss button
-
-	$(document).on('click', ".delete", function() {
-		var item = $(this).parent().parent().parent().attr('id');
+	$(document).on('click', ".todaydismiss", function() {
+		var item = $(this).parent().parent().parent().attr('id').replace('today','');
 		todaylist.splice(item,1);
-		tempitem = $(this).parent().parent().parent().attr('id');
-		temptask = $( ".task" + item ).text();
-		$( "#" + item ).fadeOut( 500, function() {
+		tempitem = $(this).parent().parent().parent().attr('id').replace('today','');
+		temptask = $( ".todaytask" + item ).text();
+		$( "#today" + item ).fadeOut( 500, function() {
 			reloadData();
-			Materialize.toast('<span>Task dismissed</span> <a class="btn-flat yellow-text undo-dismiss" href="#">Undo<a>', 3000, 'rounded');
+			Materialize.toast('<span>Task dismissed</span> <a class="btn-flat yellow-text today-undo-dismiss" href="#">Undo<a>', 3000, 'rounded');
+		});
+	});
+
+	$(document).on('click', ".tomorrowdismiss", function() {
+		var item = $(this).parent().parent().parent().attr('id').replace('tomorrow','');
+		tomorrowlist.splice(item,1);
+		tempitem = $(this).parent().parent().parent().attr('id').replace('tomorrow','');
+		temptask = $( ".tomorrowtask" + item ).text();
+		$( "#tomorrow" + item ).fadeOut( 500, function() {
+			reloadData();
+			Materialize.toast('<span>Task dismissed</span> <a class="btn-flat yellow-text tomorrow-undo-dismiss" href="#">Undo<a>', 3000, 'rounded');
 		});
 	});
 
 	// Action for undo dismiss
 
-	$(document).on('click', ".undo-dismiss", function() {
+	$(document).on('click', ".today-undo-dismiss", function() {
 		todaylist.unshift(temptask);
 		reloadData();
 	});
 
-	// Actions for push button
+	$(document).on('click', ".tomorrow-undo-dismiss", function() {
+		tomorrowlist.unshift(temptask);
+		reloadData();
+	});
+
+	// Actions for push/pull buttons
 
 	$(document).on('click', ".push", function() {
-		var item = $(this).parent().parent().parent().attr('id');
-		var task = $( ".task" + item ).text();
-		tempitem = $(this).parent().parent().parent().attr('id');
-		temptask = $( ".task" + item ).text();
+		var item = $(this).parent().parent().parent().attr('id').replace('today','');
+		var task = $( ".todaytask" + item ).text();
+		tempitem = $(this).parent().parent().parent().attr('id').replace('today','');
+		temptask = $( ".todaytask" + item ).text();
 		todaylist.splice(item,1); // Remove item from today list
 		tomorrowlist.unshift(task); // Add item to tomorrow list
-		$( "#" + item ).fadeOut( 500, function() {
+		$( "#today" + item ).fadeOut( 500, function() {
 			reloadData();
-			Materialize.toast('<span>Task pushed</span> <a class="btn-flat yellow-text undo-push" href="#">Undo<a>', 3000, 'rounded');
+			Materialize.toast('Task pushed.', 3000, 'rounded');
 		});
 	});
 
-	// Action for undo push
-
-	$(document).on('click', ".undo-push", function() {
-		tomorrowlist.splice(0,1); // Remove item from tomorrow list
-		todaylist.unshift(temptask); // Add item to today list
-		$("#tomorrow0").fadeOut( 500, function() {
+	$(document).on('click', ".pull", function() {
+		var item = $(this).parent().parent().parent().attr('id').replace('tomorrow','');
+		var task = $( ".tomorrowtask" + item ).text();
+		tempitem = $(this).parent().parent().parent().attr('id').replace('tomorrow','');
+		temptask = $( ".tomorrowtask" + item ).text();
+		tomorrowlist.splice(item,1); // Remove item from tomorrow list
+		todaylist.unshift(task); // Add item to today list
+		$( "#tomorrow" + item ).fadeOut( 500, function() {
 			reloadData();
+			Materialize.toast('Task pulled.', 3000, 'rounded');
 		});
 	});
 

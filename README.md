@@ -14,6 +14,13 @@ Planr is a simple and powerful planner app, designed to make managing daily task
 
 ---------------------------------------------------------
 
+__New in Planr 2.0:__
+* **New settings**: The settings menu has been redesigned, and includes new options (such as switching weather temperature units).
+* **Better embed support**: You can now paste links to MP3 files, Vine videos, YouTube videos, or Vimeo videos and they will appear in the task's card!
+* **Better links**: URLs pasted into tasks become links automatically!
+* **Actions for tomorrow**: You can now dismiss and pull (reverse of push to tomorrow) tasks set for tomorrow.
+* And lots of bug fixes and small improvements!
+
 __New in Planr 1.0:__
 * Initial release!
 
