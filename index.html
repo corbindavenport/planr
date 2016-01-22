@@ -5,7 +5,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
 	<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
-	<script type="text/javascript" src="js/weather.js"></script>
 	<script type="text/javascript" src="js/filesaver.min.js"></script>
 	<script type="text/javascript" src="js/blob.min.js"></script>
 	<script type="text/javascript" src="js/jquery.linkify-1.0-min.js"></script>
@@ -130,16 +129,6 @@
 	</div>
 </div>
 
-<div id="locationmodal" class="modal">
-	<div class="modal-content">
-		<b>You can enter any city, ZIP Code, or coordinates. This is used for weather forecasts.</b>
-		<div class="input-field"><input id="location" placeholder="City, Country OR U.S. ZIP Code" type="text"></div>
-	</div>
-	<div class="modal-footer share-footer">
-		<a class="waves-effect btn-flat modal-close">Save</a>
-	</div>
-</div>
-
 <div id="unitsmodal" class="modal">
 	<div class="modal-content">
 		<b>Imperial (American) and Metric units are supported.</b>
@@ -163,7 +152,6 @@
 <div id="privacymodal" class="modal modal-fixed-footer">
 	<div class="modal-content">
 		<b>Planr Privacy Policy</b>
-		<p>Weather data is retrieved from Yahoo Weather, which is subject to the <a href="https://info.yahoo.com/privacy/us/yahoo/weather/details.html" target="_blank">Yahoo Weather Privacy Policy</a>. The only data sent online is your location, which is used to retrieve weather data. Your location is not stored or recorded in any shape or form by the developer(s) of Planr. All weather services can be completely disabled by the user in the Planr app settings.</p>
 		<p>Planr uses Google Analytics by default, which is a web analysis service provided by Google. This is used by the developer(s) of Planr to determine how users interact with Planr, and help develop the app to better suit it's users. Google utilizes the data collected to track and examine the use of Planr, to prepare reports on its activities and share them with other Google services. Google may use the data collected to contextualize and personalize the ads of its own advertising network. The use of Google Analytics is subject to Google's Privacy Policy, which can be found <a href="http://www.google.com/intl/en/policies/privacy/" target="_blank">here</a>. However, all Google Analytics services can be completely disabled by the user in the Planr app settings. Furthermore, none of your app settings (location, tasks data, etc) are sent through Analytics.</p>
 		<p>Planr includes support for dynamically detecting specific types of links and embedding them inside Planr. This includes images, HTML5 video, and HTML5 audio. Planr also supports displaying content from YouTube, Vimeo, Vine, and Twitter, which are handled by the respective services' embed codes. These embedded players are not recorded or modified by Planr in any way. Embedded content from YouTube, Vimeo, Vine, and Twitter may contain tracking code such as analytics, independently reviewed by the those services. The developer(s) of Planr are in no way responsible for any negative action that may occur from the use of automatically embedded content. This can be completely disabled by switching 'Show media in cards' in the Planr app settings to off.</p>
 	</div>
@@ -237,14 +225,10 @@
 <div id="settings">
 	<ul class="settings">
 		<li class="settings-item title"><b>General</b></li>
-		<li class="settings-item"><div>Enable weather forecasts<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="showweather"><span class="lever"></span>On</label></div></a></div></li>
-		<li class="settings-item location-item">Location</li>
-		<li class="settings-item units-item">Units</li>
 		<li class="settings-item"><div>Show media in cards<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="showmedia"><span class="lever"></span>On</label></div></a></div></li>
 		<li class="settings-item title"><b>Privacy</b></li>
-		<li class="settings-item"><div>Analytics<a href="#!" class="secondary-content"><div class="switch"><label>Off<input type="checkbox" id="analytics"><span class="lever"></span>On</label></div></a></div></li>
 		<li class="settings-item privacy-item">Privacy Policy</li>
-		<li class="settings-item title"><b>About Planr 2.0</b></li>
+		<li class="settings-item title"><b>About Planr 2.1</b></li>
 		<li class="settings-item">Planr is developed by Corbin Davenport and licensed under the GPLv3 license. It uses components of <a href="http://jquery.com/" target="_blank">jQuery</a>, <a href="http://materializecss.com/" target="_blank">Materialize</a>, <a href="https://github.com/eligrey/FileSaver.js" target="_blank">FileSaver.js</a>, <a href="https://github.com/eligrey/Blob.js" target="_blank">Blob.js</a>, <a href="http://simpleweatherjs.com/" target="_blank">SimpleWeather</a>, and <a href="https://github.com/maranomynet/linkify" target="_blank">Linkify</a>.</li>
 		<li class="settings-item twitterlink">Planr on Twitter<a class="secondary-content"><i class="mdi-content-send"></i></a></li>
 		<li class="settings-item googlelink">Planr on Google+<a class="secondary-content"><i class="mdi-content-send"></i></a></li>
