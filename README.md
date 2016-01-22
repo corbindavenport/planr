@@ -8,11 +8,13 @@ Planr is a simple and powerful planner app, designed to make managing daily task
 * Follows Google's Material Design, works on any screen size
 * Add, remove, or delay tasks
 * Stores your tasks locally on your device, without any accounts or managing passwords
-* Provides the current weather (via Yahoo Weather) for today, and the forecast for tomorrow
 * Export your tasks into plain text, HTML, CSV (viewable in Microsoft Excel and other spreadsheet programs), or Planr file types
 * Import tasks from a Planr data file
 
 ---------------------------------------------------------
+
+__New in Planr 2.1:__
+* Removed all weather functionality (Yahoo Weather API discontinued)
 
 __New in Planr 2.0:__
 * **New settings**: The settings menu has been redesigned, and includes new options (such as switching weather temperature units).

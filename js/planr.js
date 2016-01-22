@@ -25,14 +25,6 @@ $(document).ready(function(){
 		localStorage['showweather'] = 'true';
 	}
 
-	if (localStorage.getItem("location") === null) {
-		localStorage['location'] = '';
-	}
-
-	if (localStorage.getItem("unit") === null) {
-		localStorage['unit'] = 'f';
-	}
-
 	if (localStorage.getItem("showmedia") === null) {
 		localStorage['showmedia'] = 'true';
 	}
@@ -57,15 +49,13 @@ $(document).ready(function(){
 
 	// Google Analytics
 
-	if (localStorage.getItem("analytics") == "true") {
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		  })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
 
-		  ga('create', 'UA-59452245-2', 'auto');
-		  ga('send', 'pageview');
-	}
+	  ga('create', 'UA-59452245-2', 'auto');
+	  ga('send', 'pageview');
 
 	// Set variables
 
@@ -87,28 +77,6 @@ $(document).ready(function(){
 		todaylist = todaylist.concat(tomorrowlist);
 		tomorrowlist = JSON.parse("[]");
 		localStorage["lastopened"] = date;
-	}
-
-	// Weather forecast
-
-	if (localStorage.getItem("showweather") === "true") {
-		if (localStorage.getItem("location") != "") {
-			$.simpleWeather({
-			location: localStorage['location'],
-			woeid: '',
-			unit: localStorage['unit'],
-			success: function(weather) {
-				$("#today-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's currently " + weather.temp + "&deg;" + weather.units.temp + " and " + weather.currently +  " in " + weather.city + ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
-				$("#tomorrow-weather").append("<div class='card'><div class='card-content'><table><tr><th style='width: 80px;'><img src='" + weather.forecast[1].thumbnail + "' style='width: 80px; height: auto;' /></th><th><p>It's going to be " + weather.forecast[1].low + "&deg;" + weather.units.temp + "/" + weather.forecast[1].high + "&deg;" + weather.units.temp + " and " + weather.forecast[1].text +  ".</p><p style='font-style: italic; font-size: 12px;'>Weather provided by Yahoo Weather.</p></th></tr></table></div></div>");
-			},
-			error: function(error) {
-				Materialize.toast('Error loading weather', 3000, 'rounded');
-			}
-			});
-
-		} else {
-			$("#today-weather").append("<div class='card'><div class='card-content'><i>Your weather location has not been configured yet. Go to the settings to set a location!</i></div></div>");
-		}
 	}
 
 	// Reload everything after changes
@@ -204,11 +172,7 @@ $(document).ready(function(){
 
 	// Read values of settings from localStorage
 
-	$("#showweather").prop('checked', JSON.parse(localStorage['showweather']));
-	$("#location").val(localStorage['location']);
-	$("#unit").val(localStorage['unit']);
 	$("#showmedia").prop('checked', JSON.parse(localStorage['showmedia']));
-	$("#analytics").prop('checked', JSON.parse(localStorage['analytics']));
 
 	// Actions for menu items
 
