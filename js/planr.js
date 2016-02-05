@@ -16,8 +16,8 @@ $(document).ready(function(){
 		localStorage['tomorrowlist'] = '';
 	}
 
-	if (localStorage.getItem("planr") != "2.0") {
-		localStorage['planr'] = '2.0';
+	if (localStorage.getItem("planr") != "2.2") {
+		localStorage['planr'] = '2.2';
 		$('#update').openModal();
 	}
 
@@ -277,8 +277,26 @@ $(document).ready(function(){
 	$(document).on('click', ".export-confirm", function() {
 		var format = $('input[name=format]:checked').attr('id');
 		$("#export").html('<div class="modal-content"><div class="progress"><div class="indeterminate"></div></div><p>Exporting ' + format + ' file...</p></div><div class="modal-footer"></div>');
+		var today = new Date();
 		if (format === "txt") {
-			var txt = ("Planr data exported at " + localStorage['lastopened'] + ":\n\nToday tasks: " + todaylist.toString() + "\n\nTomorrow tasks:" + tomorrowlist.toString());
+			var txt = "Planr data exported on " + today.toDateString() + " at " + today.getHours() + ":" + today.getMinutes() + ":\n\nTasks for today: ";
+			var todaytemp = "";
+			if (todaylist.length === 0) {
+				txt += ('\nNo tasks for today');
+			} else {
+				for (var i = 0; i < todaylist.length; ++i) {
+					txt += ('\n' + todaylist[i]);
+				}
+			}
+			txt+= "\n\nTasks for tomorrow:"
+			var tomorrowtemp = "";
+			if (tomorrowlist.length === 0) {
+				txt += ('\nNo tasks for tomorrow');
+			} else {
+				for (var i = 0; i < tomorrowlist.length; ++i) {
+					txt += ('\n' + tomorrowlist[i]);
+				}
+			}
 			var blob = new Blob([txt], {type: "text/plain;charset=utf-8"});
 			$("#export").html('<div class="modal-content">Your plain text file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
@@ -296,32 +314,30 @@ $(document).ready(function(){
 			for (var i = 0; i < tomorrowlist.length; ++i) {
 				tomorrowtemp += '"' + tomorrowlist[i] + '",';
 			}
-			var txt = ('<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"><title>Planr Data</title></head><body><p><b>Planr data exported at ' + localStorage['lastopened'] + '</b></p></p><u>Today tasks:</u></p><ul>');
+			var txt = ('<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"><title>Planr Data</title><link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css"><style>body {font-family: "Droid Sans", sans-serif;}</style></head><body><p><b>Planr data exported on ' + today.toDateString() + ' at ' + today.getHours() + ':' + today.getMinutes() + '</b></p></p><u>Tasks for today:</u></p><ul>');
 			if (todaylist.length === 0) {
 				txt += ('<li>No tasks for today</li>');
 			} else {
 				for (var i = 0; i < todaylist.length; ++i) {
 					txt += ('<li>' + todaylist[i]);
-					while((result = url.exec(todaylist[i])) !== null) {
-						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
-					}
 					txt += ('</li>');
 				}
 			}
-			txt += ('</ul><p><u>Tomorrow tasks:</u></p><ul>');
+			txt += ('</ul><p><u>Tasks for tomorrow:</u></p><ul>');
 			if (tomorrowlist.length === 0) {
 				txt += ('<li>No tasks for tomorow</li>');
 			} else {
 				for (var i = 0; i < tomorrowlist.length; ++i) {
 					txt += ('<li>' + tomorrowlist[i]);
-					while((result = url.exec(tomorrowlist[i])) !== null) {
-						txt += (' <a href="' + result[1] + '" target="_blank">[Open Link]</a>');
-					}
 					txt += ('</li>');
 				}
 			}
 			txt += ('</ul></body></html>');
-			var blob = new Blob([txt], {type: "text/html;charset=utf-8"});
+			$("#export").html('<div class="modal-content"><b>Generating HTML file...</b><div id="htmlexport"></div></div><div class="modal-footer"><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#htmlexport").html(txt);
+			$("#htmlexport").linkify({});
+			$("#htmlexport a").attr("target","_blank");
+			var blob = new Blob([$("#htmlexport").html()], {type: "text/html;charset=utf-8"});
 			$("#export").html('<div class="modal-content">Your HTML file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
@@ -329,7 +345,7 @@ $(document).ready(function(){
 				$('#export').closeModal();
 			});
 		} else if (format === "csv") {
-			var txt = ('"Planr data exported at ' + localStorage['lastopened'] + '"\n"Today tasks:",');
+			var txt = ('"Planr data exported on ' + today.toDateString() + ' at ' + today.getHours() + ':' + today.getMinutes() + '"\n"Today tasks:",');
 			if (todaylist.length === 0) {
 				txt += ('No tasks');
 			} else {
@@ -346,7 +362,7 @@ $(document).ready(function(){
 				}
 			}
 			var blob = new Blob([txt], {type: "text/csv;charset=utf-8"});
-			$("#export").html('<div class="modal-content">Your CSV file has been successfully exported! You can now download the file to your device.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
+			$("#export").html('<div class="modal-content">Your CSV file has been successfully exported! You can now download the file to your device.<br /><br />You can open the CSV file in just about any spreadsheet application, including Microsoft Excel.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat download-trigger">Download</a><a href="#" class="waves-effect btn-flat export-close">Close</a></div>');
 			$(document).on('click', ".download-trigger", function() {
 				Materialize.toast('Downloading!', 3000, 'rounded');
 				saveAs(blob, "planr-data.csv");
@@ -386,7 +402,7 @@ $(document).ready(function(){
 		var file = this.files[0];
 		var reader = new FileReader();
 		var format = file.name.split('.').pop().toLowerCase();
-		$("#import").html('<div class="modal-content"><div class="progress"><div class="indeterminate"></div></div><p>Importing file...</p></div><div class="modal-footer"></div>');
+		$("#import").html('<div class="modal-content"><div class="progress"><div class="indeterminate"></div></div>Importing file...</div><div class="modal-footer"></div>');
 		reader.onload = function(progressEvent){
 			var content = this.result.replace(/(?:\r\n|\r|\n)/g, '<br />');
 			var lines = this.result.split('\n');
@@ -395,7 +411,7 @@ $(document).ready(function(){
 					todaylist = JSON.parse("[" + lines[1] + "]");
 					tomorrowlist = JSON.parse("[" + lines[2] + "]");
 					reloadData();
-					$("#import").html('<div class="modal-content"><h4>Import Complete</h4><p>Import from Planr data file complete! You can now close this window.</p></div><div class="modal-footer"><a href="#" class="waves-effect btn-flat import-close">Close</a></div>');
+					$("#import").html('<div class="modal-content"><h4>Import Complete</h4>Import from Planr data file complete! You can now close this window.</div><div class="modal-footer"><a href="#" class="waves-effect btn-flat import-close">Close</a></div>');
 					$(document).on('click', ".import-close", function() {
 						$('#import').closeModal();
 					});
@@ -406,7 +422,7 @@ $(document).ready(function(){
 					});
 				}
 			} else {
-				$("#import").html('<div class="modal-content"><h4>Error</h4><p>The file selected was not a reconized file. Imported files must be in Planr data file format (.plnr). The contents of the file can be seen below:</p><p style="border:1px solid 757575; background:#EEEEEE; padding: 10px; width:100%; font-family: Courier, monospace;">' + content + '</p></div><div class="modal-footer"><a href="#" class="waves-effect btn-flat import-close">Close</a></div>');
+				$("#import").html('<div class="modal-content"><h4>Error</h4>The file selected was not a reconized file. Imported files must be in Planr data file format (.plnr). The contents of the file can be seen below:<br /><div style="border:1px solid 757575; background:#EEEEEE; padding: 10px; width:100%; font-family: Courier, monospace;">' + content + '</div></div><div class="modal-footer"><a href="#" class="waves-effect btn-flat import-close">Close</a></div>');
 				$(document).on('click', ".import-close", function() {
 					$('#import').closeModal();
 				});

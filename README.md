@@ -13,6 +13,10 @@ Planr is a simple and powerful planner app, designed to make managing daily task
 
 ---------------------------------------------------------
 
+__New in Planr 2.2:__
+* Improved exporting tasks to HTML, CSV, and TXT files.
+* Updated Materialize UI framework.
+
 __New in Planr 2.1:__
 * Removed all weather functionality (Yahoo Weather API discontinued)
 
